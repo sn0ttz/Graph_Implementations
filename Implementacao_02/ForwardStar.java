@@ -57,13 +57,14 @@ public class ForwardStar {
                 sucessors.add(destiny[j]);
             }
         }
-        // Ordenando em ordem lexicografica
-        sucessors.sort(null);
-        // Adicionando a fila
+        // Ordenando em ordem decrescente para ficar em ordem lexicografica na hora de
+        // adicionar a stack
+        sucessors.sort((a, b) -> b - a);
 
         return sucessors;
     }
 
+    // fucn de predecessores, nao foi usada nessa imp mas e sempre bom ter uma
     public ArrayList<Integer> getPredecessors(int Vertex) {
         ArrayList<Integer> predecessors = new ArrayList<>();
         for (int i = 0; i < pointer.length; i++) {
@@ -87,6 +88,7 @@ public class ForwardStar {
     }
 
     public void Dfs() {
+        // func suplementar para inicializar os atributos da dfs
         counter = 0;
         for (int i = 0; i < TD.length; i++) {
             TT[i] = 0;
@@ -99,23 +101,25 @@ public class ForwardStar {
                 Dfs(i + 1);
             }
         }
+        // debug para printar todas as arestas
         // for (Dfs_Edge edge : edges) {
         // System.out.println(edge);
         // }
     }
 
     private void Dfs(int root) {
+        // para prevenir stackoverflow da maquina, utilizei a stack do java
         Stack<Integer> stack = new Stack<>();
         stack.push(root);
         counter++;
         TD[root - 1] = counter;
-
         while (!stack.isEmpty()) {
+            // retira o vertice do topo da pilha e processa todos os seus sucessores
             int current = stack.pop();
-            int correctedVertex = current - 1;
             ArrayList<Integer> successors = getSucessors(current);
 
             for (Integer vertex : successors) {
+                // se o tempo de descoberta for 0, ele ainda nao foi visitado (arvore)
                 if (TD[vertex - 1] == 0) {
                     father[vertex - 1] = current;
                     edges.add(new Dfs_Edge(current, vertex, "tree"));
@@ -123,18 +127,33 @@ public class ForwardStar {
                     counter++;
                     TD[vertex - 1] = counter;
                 } else {
+                    // se o vertice ja foi visitado, ele e um back, forward ou cross
+
+                    // se o vertice ja foi visitado e ainda nao acabou, ele e back (retorno)
                     if (TT[vertex - 1] == 0) {
                         edges.add(new Dfs_Edge(current, vertex, "back"));
+                        // se o vertice ja acabou, mas o tempo de descoberta e maior que o do vertice
+                        // atual, ele e forward (avanço)
                     } else if (TD[current - 1] < TD[vertex - 1]) {
                         edges.add(new Dfs_Edge(current, vertex, "forward"));
+                        // se o vertice ja acabou e o tempo de descoberta e menor que o do vertice
+                        // atual,
+                        // ele e cross (cruzamento)
                     } else {
                         edges.add(new Dfs_Edge(current, vertex, "cross"));
                     }
                 }
             }
+            // quando todos os sucessores foram processados, o vertice morre
             counter++;
-            TT[correctedVertex] = counter;
+            // aqui jaz
+            TT[current - 1] = counter;
         }
+    }
+
+    // outra funcao debug
+    public ArrayList<Dfs_Edge> getEdges() {
+        return edges;
     }
 
     public ArrayList<Dfs_Edge> getTrees() {
