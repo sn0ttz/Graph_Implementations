@@ -7,8 +7,18 @@ import java.util.Scanner;
 
 public class Graph {
     public static void main(String[] args) throws IOException, InterruptedException {
-        BufferedReader buf = new BufferedReader(new FileReader("Implementacao_02/graph-test-50000-1.txt"));
         Scanner sc = new Scanner(System.in);
+        int graph_choice = 0;
+        String choice = "";
+        System.out.println("Choose the graph you want to test!\n1- 100 vertices\n2- 50000 vertices");
+        graph_choice = sc.nextInt();
+        if (graph_choice == 1) {
+            choice = "Implementacao_02/graph-test-100-1.txt";
+        } else {
+            choice = "Implementacao_02/graph-test-50000-1.txt";
+        }
+        System.out.println();
+        BufferedReader buf = new BufferedReader(new FileReader(choice));
 
         int[] graphSize = stringTreatment(buf.readLine());
         String data = "";
@@ -21,6 +31,7 @@ public class Graph {
         // setando o array de ponteiro do forward star
         fwd.setPointer();
 
+        // executando a busca e preenchendo a tabela de descoberta e termino
         fwd.Dfs();
 
         int user_input = 0;
