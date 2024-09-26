@@ -63,7 +63,7 @@ public class ForwardStar {
         return sucessors;
     }
 
-    // fucn de predecessores, nao foi usada nessa imp mas e sempre bom ter uma
+    // func de predecessores, nao foi usada nessa imp mas e sempre bom ter uma
     public ArrayList<Integer> getPredecessors(int Vertex) {
         ArrayList<Integer> predecessors = new ArrayList<>();
         for (int i = 0; i < pointer.length; i++) {
@@ -116,7 +116,7 @@ public class ForwardStar {
         TD[root - 1] = counter;
         while (!stack.isEmpty()) {
             boolean discovered = false;
-            // retira o vertice do topo da pilha e processa todos os seus sucessores
+            // olha o vertice do topo da pilha e processa todos os seus sucessores
             int current = stack.peek();
             ArrayList<Integer> successors = getSucessors(current);
 
