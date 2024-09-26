@@ -121,6 +121,7 @@ public class ForwardStar {
             ArrayList<Integer> successors = getSucessors(current);
 
             for (Integer vertex : successors) {
+                // para cada sucessor, verifica se ele ja foi visitado
                 String edge = current + " " + vertex;
                 if (visited.containsKey(edge)) {
                     continue;
