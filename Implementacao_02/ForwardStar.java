@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class ForwardStar {
@@ -48,7 +49,7 @@ public class ForwardStar {
     public ArrayList<Integer> getSucessors(int Vertex) {
         ArrayList<Integer> sucessors = new ArrayList<>();
         int correctedVertex = Vertex - 1;
-        if (correctedVertex == pointer.length - 1) {
+        if (correctedVertex == pointer.length - 1 || pointer[correctedVertex + 1] == 0) {
             for (int j = pointer[correctedVertex]; j < destiny.length; j++) {
                 sucessors.add(destiny[j]);
             }
@@ -57,9 +58,7 @@ public class ForwardStar {
                 sucessors.add(destiny[j]);
             }
         }
-        // Ordenando em ordem decrescente para ficar em ordem lexicografica na hora de
-        // adicionar a stack
-        sucessors.sort((a, b) -> b - a);
+        sucessors.sort((a, b) -> a - b);
 
         return sucessors;
     }
@@ -108,17 +107,27 @@ public class ForwardStar {
     }
 
     private void Dfs(int root) {
-        // para prevenir stackoverflow da maquina, utilizei a stack do java
+        // para prevenir stackoverflow da maquina, utilizei a stack do java e fiz a dfs
+        // de modo iterativo
         Stack<Integer> stack = new Stack<>();
         stack.push(root);
         counter++;
+        HashMap<String, Boolean> visited = new HashMap<>();
         TD[root - 1] = counter;
         while (!stack.isEmpty()) {
+            boolean discovered = false;
             // retira o vertice do topo da pilha e processa todos os seus sucessores
-            int current = stack.pop();
+            int current = stack.peek();
             ArrayList<Integer> successors = getSucessors(current);
 
             for (Integer vertex : successors) {
+                String edge = current + " " + vertex;
+                if (visited.containsKey(edge)) {
+                    continue;
+                } else {
+                    visited.put(edge, true);
+                }
+
                 // se o tempo de descoberta for 0, ele ainda nao foi visitado (arvore)
                 if (TD[vertex - 1] == 0) {
                     father[vertex - 1] = current;
@@ -126,9 +135,10 @@ public class ForwardStar {
                     stack.push(vertex);
                     counter++;
                     TD[vertex - 1] = counter;
+                    discovered = true;
+                    break;
                 } else {
                     // se o vertice ja foi visitado, ele e um back, forward ou cross
-
                     // se o vertice ja foi visitado e ainda nao acabou, ele e back (retorno)
                     if (TT[vertex - 1] == 0) {
                         edges.add(new Dfs_Edge(current, vertex, "back"));
@@ -144,10 +154,12 @@ public class ForwardStar {
                     }
                 }
             }
-            // quando todos os sucessores foram processados, o vertice morre
-            counter++;
             // aqui jaz
-            TT[current - 1] = counter;
+            if (!discovered) {
+                counter++;
+                TT[current - 1] = counter;
+                stack.pop();
+            }
         }
     }
 
