@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 public class Graph {
     public static void main(String[] args) throws IOException, InterruptedException {
+
         Scanner scanner = new Scanner(System.in);
         RandomAccessFile raf = new RandomAccessFile("graph-test-50000-1.txt", "r");
 
