@@ -12,7 +12,7 @@ public class AdjacentList {
     }
 
     public void add(int Vertex, int value) {
-        VertexList.get(Vertex - 1).sucessorList.add(value);
+        VertexList.get(Vertex).sucessorList.add(value);
     }
 
     public void Dfs(int root) {

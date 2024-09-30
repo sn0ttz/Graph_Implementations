@@ -7,58 +7,50 @@ import java.util.Scanner;
 public class Graph {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
-        BufferedReader buf = new BufferedReader(new FileReader("TP01/graph-test-50000-1.txt"));
 
         String data = "";
 
-        int[] graphSize = stringTreatment(buf.readLine());
-
-        AdjacentList adj = new AdjacentList(graphSize[0]);
-
-        while ((data = buf.readLine()) != null) {
-            int tuple[] = stringTreatment(data);
-            adj.add(tuple[0], tuple[1]);
-        }
+        AdjacentList adj;
 
         int userOption = 0;
-        int vertexNumber;
+        int vertexNumber = 0;
+        int edgeNumber = 0;
+
         while (userOption != 5) {
             if (userOption != 5) {
-                System.out.println("Por favor, informe o numero do vertice que quer consultar");
-                vertexNumber = scanner.nextInt();
+                System.out.println("Por favor, selecione o tamanho do grafo desejado");
                 System.out.println(
-                        "Agora, digite 1 para saber o grau de saida dele, 2 para o grau de entrada, 3 para o conjunto de sucessores , 4 para o conjunto de predecessores e 5 para sair");
+                        " 1 - 100 \n 2 - 1000 \n 3 - 10000 \n 4 - 100000 \n 5 - sair");
+
                 userOption = scanner.nextInt();
                 switch (userOption) {
                     case 1:
-                        System.out.println("O grau de saida do vertice e de: " + exitDegree(vertexNumber, adj));
+                        vertexNumber = 100;
                         break;
                     case 2:
-                        System.out.println("O grau de entrada do vertice e de: " + enteringDegree(vertexNumber, adj));
+                        vertexNumber = 1000;
                         break;
                     case 3:
-                        try {
-                            System.out.println(
-                                    "O conjunto de sucessores do vertice e: " + getSuccessors(vertexNumber, adj));
-                        } catch (Exception e) {
-                            System.out.println("Numero invalido de vertice. Por favor, tente novamente");
-                        }
+                        vertexNumber = 10000;
                         break;
                     case 4:
-                        System.out.println(
-                                "O conjunto de predecessores do vertice e: " + getPredecessors(vertexNumber, adj));
+                        vertexNumber = 100000;
                         break;
                     case 5:
                         break;
-                    case 6:
-                        // debug
-                        System.out.println(adj);
                     default:
                         break;
                 }
             }
+
+            System.out.println("Por favor, selecione o número de arestas desejado");
+            edgeNumber = scanner.nextInt();
+
+            adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
+
+            System.out.println(adj.toString());
         }
-        buf.close();
+
         scanner.close();
     }
 
