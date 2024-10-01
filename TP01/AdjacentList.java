@@ -4,6 +4,8 @@ import java.util.Stack;
 
 public class AdjacentList {
     ArrayList<Vertex> VertexList = new ArrayList<>();
+    HashMap<Integer, Boolean> visited;
+    int componnents;
 
     AdjacentList(int size) {
         for (int index = 1; index <= size; index++) {
@@ -15,12 +17,33 @@ public class AdjacentList {
         VertexList.get(Vertex).sucessorList.add(value);
     }
 
-    public void Dfs(int root) {
+    public void remove(int Vertex) {
+        for (Vertex vert : VertexList) {
+            if (vert.sucessorList.contains(Vertex)) {
+                int pos = vert.sucessorList.indexOf(Vertex);
+                vert.sucessorList.remove(pos);
+            }
+        }
+        VertexList.remove(Vertex);
+    }
+
+    public void Dfs() {
+        visited = new HashMap<>();
+        componnents = 0;
+        for (Vertex vert : this.VertexList) {
+            if (!visited.containsKey(vert.number)) {
+                componnents++;
+                visited.put(vert.number, true);
+                Dfs(vert.number);
+            }
+        }
+    }
+
+    private void Dfs(int root) {
         // para prevenir stackoverflow da maquina, utilizei a stack do java e fiz a dfs
         // de modo iterativo
         Stack<Integer> stack = new Stack<>();
         stack.push(root);
-        HashMap<Integer, Boolean> visited = new HashMap<>();
         while (!stack.isEmpty()) {
             boolean discovered = false;
             // olha o vertice do topo da pilha e processa todos os seus sucessores
@@ -47,7 +70,7 @@ public class AdjacentList {
     }
 
     public ArrayList<Integer> getSucessors(int vertex) {
-        return VertexList.get(vertex - 1).sucessorList;
+        return VertexList.get(vertex).sucessorList;
     }
 
     @Override
