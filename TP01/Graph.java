@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Graph {
@@ -45,9 +46,14 @@ public class Graph {
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
 
             System.out.println(adj.toString());
+            adj.Dfs();
 
             ArrayList<Vertex> articulationList = connectivityTest(adj);
-            System.out.println("Articulation points: " + articulationList.toString());
+            System.out.println("Articulation points: ");
+            for (Vertex articulation : articulationList) {
+                System.out.print(articulation.number + " ");
+            }
+            System.out.println();
         }
 
         scanner.close();
@@ -56,22 +62,31 @@ public class Graph {
     public static ArrayList<Vertex> connectivityTest(AdjacentList adj) {
         ArrayList<Vertex> articullationList = new ArrayList<>();
         // Creating a deep copy of the original graph
-        AdjacentList copy = new AdjacentList(adj);
+
+        AdjacentList copy = adj.clone();
         // Running a DFS on the original graph to check the number of components
-        adj.Dfs();
-        int components = adj.componnents;
-        for (Vertex vert : copy.VertexList) {
+        int components = adj.Dfs();
+        // Use a temporary list to store vertices to be removed and re-added
+        ArrayList<Vertex> tempVertexList = new ArrayList<>(copy.VertexList);
+
+        for (Vertex vert : tempVertexList) {
             // Removing a vertex
-            copy.VertexList.remove(vert);
+            copy.removeVertex(vert);
             // Running a DFS on the graph without the vertex
-            copy.Dfs();
+            int copycomp = copy.Dfs();
             // If the number of components increases, the removed vertex was an articulation
             // point
-            if (copy.componnents > components) {
+            if (copycomp > components) {
                 articullationList.add(vert);
             }
             // Re-adding the vertex
             copy.VertexList.add(vert);
+
+            for (Vertex v : copy.VertexList) {
+                if (adj.VertexList.get(v.number).sucessorList.contains(vert.number)) {
+                    v.sucessorList.add(vert.number);
+                }
+            }
         }
         return articullationList;
     }

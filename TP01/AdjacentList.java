@@ -5,7 +5,7 @@ import java.util.Stack;
 public class AdjacentList {
     ArrayList<Vertex> VertexList = new ArrayList<>();
     HashMap<Integer, Boolean> visited;
-    int componnents;
+    int components;
 
     AdjacentList(int size) {
         for (int index = 0; index < size; index++) {
@@ -14,47 +14,41 @@ public class AdjacentList {
     }
 
     AdjacentList(AdjacentList original) {
+        this.VertexList = new ArrayList<>();
         for (Vertex vertex : original.VertexList) {
-            this.VertexList.add(new Vertex(vertex));
+            this.VertexList.add(vertex.clone());
         }
     }
 
-    public AdjacentList clone() {
-        AdjacentList clone = new AdjacentList(VertexList.size());
-        for (Vertex vert : VertexList) {
-            clone.VertexList.add(vert.clone());
-        }
-        return clone;
+    protected AdjacentList clone() {
+        return new AdjacentList(this);
     }
 
     public void add(int Vertex, int value) {
         VertexList.get(Vertex).sucessorList.add(value);
     }
 
-    public void remove(int Vertex) {
-        java.util.Iterator<Vertex> iterator = VertexList.iterator();
-        while (iterator.hasNext()) {
-            Vertex vert = iterator.next();
-            if (vert.number == Vertex) {
-                vert.sucessorList.clear();
-                iterator.remove(); // Safely remove the vertex from the list
-            } else if (vert.sucessorList.contains(Vertex)) {
-                int pos = vert.sucessorList.indexOf(Vertex);
-                vert.sucessorList.remove(pos);
-            }
+    public void removeVertex(Vertex vertex) {
+        // Remove the vertex from the VertexList
+        VertexList.remove(vertex);
+
+        // Remove all references to this vertex in the successor lists of other vertices
+        for (Vertex v : VertexList) {
+            v.sucessorList.remove(Integer.valueOf(vertex.number));
         }
     }
 
-    public void Dfs() {
+    public int Dfs() {
         visited = new HashMap<>();
-        componnents = 0;
+        components = 0;
         for (Vertex vert : VertexList) {
             if (!visited.containsKey(vert.number)) {
-                componnents++;
+                components++;
                 visited.put(vert.number, true);
                 Dfs(vert.number);
             }
         }
+        return components;
     }
 
     private void Dfs(int root) {
@@ -88,7 +82,13 @@ public class AdjacentList {
     }
 
     public ArrayList<Integer> getSucessors(int vertex) {
-        return VertexList.get(vertex).sucessorList;
+        ArrayList<Integer> sucessors = new ArrayList<>();
+        for (Vertex vert : VertexList) {
+            if (vert.number == vertex) {
+                sucessors = new ArrayList<>(vert.sucessorList);
+            }
+        }
+        return sucessors;
     }
 
     @Override
