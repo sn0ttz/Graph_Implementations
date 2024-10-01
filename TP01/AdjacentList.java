@@ -5,38 +5,50 @@ import java.util.Stack;
 public class AdjacentList {
     ArrayList<Vertex> VertexList = new ArrayList<>();
     HashMap<Integer, Boolean> visited;
-    int componnents;
+    int components;
 
     AdjacentList(int size) {
-        for (int index = 1; index <= size; index++) {
+        for (int index = 0; index < size; index++) {
             VertexList.add(new Vertex(index));
         }
+    }
+
+    AdjacentList(AdjacentList original) {
+        this.VertexList = new ArrayList<>();
+        for (Vertex vertex : original.VertexList) {
+            this.VertexList.add(vertex.clone());
+        }
+    }
+
+    protected AdjacentList clone() {
+        return new AdjacentList(this);
     }
 
     public void add(int Vertex, int value) {
         VertexList.get(Vertex).sucessorList.add(value);
     }
 
-    public void remove(int Vertex) {
-        for (Vertex vert : VertexList) {
-            if (vert.sucessorList.contains(Vertex)) {
-                int pos = vert.sucessorList.indexOf(Vertex);
-                vert.sucessorList.remove(pos);
-            }
+    public void removeVertex(Vertex vertex) {
+        // Remove the vertex from the VertexList
+        VertexList.remove(vertex);
+
+        // Remove all references to this vertex in the successor lists of other vertices
+        for (Vertex v : VertexList) {
+            v.sucessorList.remove(Integer.valueOf(vertex.number));
         }
-        VertexList.remove(Vertex);
     }
 
-    public void Dfs() {
+    public int Dfs() {
         visited = new HashMap<>();
-        componnents = 0;
-        for (Vertex vert : this.VertexList) {
+        components = 0;
+        for (Vertex vert : VertexList) {
             if (!visited.containsKey(vert.number)) {
-                componnents++;
+                components++;
                 visited.put(vert.number, true);
                 Dfs(vert.number);
             }
         }
+        return components;
     }
 
     private void Dfs(int root) {
@@ -70,7 +82,13 @@ public class AdjacentList {
     }
 
     public ArrayList<Integer> getSucessors(int vertex) {
-        return VertexList.get(vertex).sucessorList;
+        ArrayList<Integer> sucessors = new ArrayList<>();
+        for (Vertex vert : VertexList) {
+            if (vert.number == vertex) {
+                sucessors = new ArrayList<>(vert.sucessorList);
+            }
+        }
+        return sucessors;
     }
 
     @Override
@@ -95,4 +113,15 @@ class Vertex {
         sucessorList = new ArrayList<Integer>();
         this.number = n;
     }
+
+    Vertex(Vertex vertex) {
+        this.number = vertex.number;
+        this.sucessorList = new ArrayList<>(vertex.sucessorList);
+    }
+
+    // Clone method
+    public Vertex clone() {
+        return new Vertex(this);
+    }
+
 }

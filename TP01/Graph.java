@@ -1,14 +1,11 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class Graph {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
-
-        String data = "";
 
         AdjacentList adj;
 
@@ -49,37 +46,49 @@ public class Graph {
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
 
             System.out.println(adj.toString());
+            adj.Dfs();
 
-            // adj.remove(50);
-
-            // System.out.println(adj.toString());
+            ArrayList<Vertex> articulationList = connectivityTest(adj);
+            System.out.println("Articulation points: ");
+            for (Vertex articulation : articulationList) {
+                System.out.print(articulation.number + " ");
+            }
+            System.out.println();
         }
 
         scanner.close();
     }
 
-    public static ArrayList<Integer> getPredecessors(int vertex, AdjacentList list) {
-        ArrayList<Integer> predecessors = new ArrayList<>();
-        for (Vertex vert : list.VertexList) {
-            for (Integer num : vert.sucessorList) {
-                if (num == vertex) {
-                    predecessors.add(vert.number);
+    public static ArrayList<Vertex> connectivityTest(AdjacentList adj) {
+        ArrayList<Vertex> articullationList = new ArrayList<>();
+        // Creating a deep copy of the original graph
+
+        AdjacentList copy = adj.clone();
+        // Running a DFS on the original graph to check the number of components
+        int components = adj.Dfs();
+        // Use a temporary list to store vertices to be removed and re-added
+        ArrayList<Vertex> tempVertexList = new ArrayList<>(copy.VertexList);
+
+        for (Vertex vert : tempVertexList) {
+            // Removing a vertex
+            copy.removeVertex(vert);
+            // Running a DFS on the graph without the vertex
+            int copycomp = copy.Dfs();
+            // If the number of components increases, the removed vertex was an articulation
+            // point
+            if (copycomp > components) {
+                articullationList.add(vert);
+            }
+            // Re-adding the vertex
+            copy.VertexList.add(vert);
+
+            for (Vertex v : copy.VertexList) {
+                if (adj.VertexList.get(v.number).sucessorList.contains(vert.number)) {
+                    v.sucessorList.add(vert.number);
                 }
             }
         }
-        return predecessors;
-    }
-
-    public void connectivityTest(AdjacentList adj) {
-        ArrayList<Vertex> articullationList = new ArrayList<>();
-        // copiando o grafo original
-        AdjacentList copy = adj;
-        // rodando uma DFS no grafo original para verificar o numero de componentes
-        adj.Dfs();
-        int components = adj.componnents;
-        for (Vertex vert : copy.VertexList) {
-
-        }
+        return articullationList;
     }
 
     public static ArrayList<Integer> getSuccessors(int vertex, AdjacentList list) {
