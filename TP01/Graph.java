@@ -49,6 +49,10 @@ public class Graph {
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
 
             System.out.println(adj.toString());
+
+            // adj.remove(50);
+
+            // System.out.println(adj.toString());
         }
 
         scanner.close();
@@ -64,6 +68,18 @@ public class Graph {
             }
         }
         return predecessors;
+    }
+
+    public void connectivityTest(AdjacentList adj) {
+        ArrayList<Vertex> articullationList = new ArrayList<>();
+        // copiando o grafo original
+        AdjacentList copy = adj;
+        // rodando uma DFS no grafo original para verificar o numero de componentes
+        adj.Dfs();
+        int components = adj.componnents;
+        for (Vertex vert : copy.VertexList) {
+
+        }
     }
 
     public static ArrayList<Integer> getSuccessors(int vertex, AdjacentList list) {
