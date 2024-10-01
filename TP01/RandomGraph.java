@@ -6,14 +6,9 @@ import java.util.Random;
 import java.util.Set;
 
 public class RandomGraph {
- 
-    public static AdjacentList generateRandomGraph (int Vertices, Integer Edges) {
+
+    public static AdjacentList generateRandomGraph(int Vertices, Integer Edges) {
         AdjacentList graph = new AdjacentList(Vertices);
-        
-        // Initializes the graph with the vertices
-        for (int i = 0; i < Vertices; i++) {
-            addVertex(i, graph);
-        }
 
         int maxEdges = (Vertices * (Vertices - 1)) / 2;
 
@@ -27,7 +22,7 @@ public class RandomGraph {
         // Verifies that the number of edges is not greater than the maximum possible
         Edges = Math.min(Edges, maxEdges);
         System.out.println("Generating graph with " + Vertices + " vertices and " + Edges + " edges");
-        
+
         System.out.println("Density: " + ((double) Edges / (Vertices * (Vertices - 1))));
 
         Set<String> existingEdges = new HashSet<>();
@@ -39,7 +34,6 @@ public class RandomGraph {
         }
 
         Collections.shuffle(vertices, rand);
-
 
         // Adds edges to make the graph connected
         for (int v = 1; v < vertices.size(); v++) {
@@ -59,11 +53,11 @@ public class RandomGraph {
 
     }
 
-    public static void addVertex (int vertex, AdjacentList graph) {
+    public static void addVertex(int vertex, AdjacentList graph) {
         graph.VertexList.add(new Vertex(vertex));
     }
 
-    private static void addEdge (AdjacentList graph, Set<String> existingEdges, int vertex1, int vertex2) {
+    private static void addEdge(AdjacentList graph, Set<String> existingEdges, int vertex1, int vertex2) {
         int smaller = Math.min(vertex1, vertex2);
         int bigger = Math.max(vertex1, vertex2);
         String edgeKey = smaller + " " + bigger;

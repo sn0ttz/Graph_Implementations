@@ -8,9 +8,23 @@ public class AdjacentList {
     int componnents;
 
     AdjacentList(int size) {
-        for (int index = 1; index <= size; index++) {
+        for (int index = 0; index < size; index++) {
             VertexList.add(new Vertex(index));
         }
+    }
+
+    AdjacentList(AdjacentList original) {
+        for (Vertex vertex : original.VertexList) {
+            this.VertexList.add(new Vertex(vertex));
+        }
+    }
+
+    public AdjacentList clone() {
+        AdjacentList clone = new AdjacentList(VertexList.size());
+        for (Vertex vert : VertexList) {
+            clone.VertexList.add(vert.clone());
+        }
+        return clone;
     }
 
     public void add(int Vertex, int value) {
@@ -18,19 +32,23 @@ public class AdjacentList {
     }
 
     public void remove(int Vertex) {
-        for (Vertex vert : VertexList) {
-            if (vert.sucessorList.contains(Vertex)) {
+        java.util.Iterator<Vertex> iterator = VertexList.iterator();
+        while (iterator.hasNext()) {
+            Vertex vert = iterator.next();
+            if (vert.number == Vertex) {
+                vert.sucessorList.clear();
+                iterator.remove(); // Safely remove the vertex from the list
+            } else if (vert.sucessorList.contains(Vertex)) {
                 int pos = vert.sucessorList.indexOf(Vertex);
                 vert.sucessorList.remove(pos);
             }
         }
-        VertexList.remove(Vertex);
     }
 
     public void Dfs() {
         visited = new HashMap<>();
         componnents = 0;
-        for (Vertex vert : this.VertexList) {
+        for (Vertex vert : VertexList) {
             if (!visited.containsKey(vert.number)) {
                 componnents++;
                 visited.put(vert.number, true);
@@ -95,4 +113,15 @@ class Vertex {
         sucessorList = new ArrayList<Integer>();
         this.number = n;
     }
+
+    Vertex(Vertex vertex) {
+        this.number = vertex.number;
+        this.sucessorList = new ArrayList<>(vertex.sucessorList);
+    }
+
+    // Clone method
+    public Vertex clone() {
+        return new Vertex(this);
+    }
+
 }

@@ -1,5 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -7,8 +5,6 @@ import java.util.Scanner;
 public class Graph {
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner scanner = new Scanner(System.in);
-
-        String data = "";
 
         AdjacentList adj;
 
@@ -50,36 +46,34 @@ public class Graph {
 
             System.out.println(adj.toString());
 
-            // adj.remove(50);
-
-            // System.out.println(adj.toString());
+            ArrayList<Vertex> articulationList = connectivityTest(adj);
+            System.out.println("Articulation points: " + articulationList.toString());
         }
 
         scanner.close();
     }
 
-    public static ArrayList<Integer> getPredecessors(int vertex, AdjacentList list) {
-        ArrayList<Integer> predecessors = new ArrayList<>();
-        for (Vertex vert : list.VertexList) {
-            for (Integer num : vert.sucessorList) {
-                if (num == vertex) {
-                    predecessors.add(vert.number);
-                }
-            }
-        }
-        return predecessors;
-    }
-
-    public void connectivityTest(AdjacentList adj) {
+    public static ArrayList<Vertex> connectivityTest(AdjacentList adj) {
         ArrayList<Vertex> articullationList = new ArrayList<>();
-        // copiando o grafo original
-        AdjacentList copy = adj;
-        // rodando uma DFS no grafo original para verificar o numero de componentes
+        // Creating a deep copy of the original graph
+        AdjacentList copy = new AdjacentList(adj);
+        // Running a DFS on the original graph to check the number of components
         adj.Dfs();
         int components = adj.componnents;
         for (Vertex vert : copy.VertexList) {
-
+            // Removing a vertex
+            copy.VertexList.remove(vert);
+            // Running a DFS on the graph without the vertex
+            copy.Dfs();
+            // If the number of components increases, the removed vertex was an articulation
+            // point
+            if (copy.componnents > components) {
+                articullationList.add(vert);
+            }
+            // Re-adding the vertex
+            copy.VertexList.add(vert);
         }
+        return articullationList;
     }
 
     public static ArrayList<Integer> getSuccessors(int vertex, AdjacentList list) {
