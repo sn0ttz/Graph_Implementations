@@ -112,7 +112,7 @@ public class Tarjan {
     }
 
     private void printBiconnectedComponents() {
-        System.out.println("Biconnected Components:");
+        System.out.println("Componentes biconexos:");
         for (ArrayList<int[]> component : bc) {
             System.out.print("{ ");
             for (int[] edge : component) {
@@ -120,9 +120,5 @@ public class Tarjan {
             }
             System.out.println("}");
         }
-    }
-
-    public static void main(String[] args) {
-        
     }
 }

@@ -54,6 +54,12 @@ public class Graph {
                 System.out.print(articulation.number + " ");
             }
             System.out.println();
+
+            System.out.println("--------------------------");
+            System.out.println("Iniciando método de Tarjan...");
+            Tarjan tarjan = new Tarjan();
+            tarjan.findBC(adj);
+            System.out.println("------------------------");
         }
 
         scanner.close();
