@@ -59,6 +59,12 @@ public class Graph {
                 cycleMap = adj.isCycle(v1.number);
                 System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
             }
+            
+            System.out.println("--------------------------");
+            System.out.println("Iniciando método de Tarjan...");
+            Tarjan tarjan = new Tarjan();
+            tarjan.findBC(adj);
+            System.out.println("------------------------");
         }
         scanner.close();
     }

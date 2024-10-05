@@ -1,94 +1,123 @@
+import java.util.Stack;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+
+class State {
+    int vertex;
+    int parent;
+    Iterator<Integer> iterator;
+
+    public State(int vertex, int parent) {
+        this.vertex = vertex;
+        this.parent = parent;
+    }
+}
 
 public class Tarjan {
     // Atributes
-    // todo private AdjacentList graph;
-    private int n; // number of vertices
-    private ArrayList<Integer> adj[]; // adjacency list
     private int time;
+    private ArrayList<ArrayList<int[]>> bc = new ArrayList<>(); // biconnected components
+    private Stack<int[]> edgeStack = new Stack<>(); // stack of edges
+    int disc[]; // discovery time of vertex
+    int low[]; // low number of vertex
 
-    // Constuctor
-    public Tarjan(int n) {
-        this.n = n;
+    // Constructor
+    public Tarjan() {
         this.time = 0;
-        for (int i = 1; i <= n; i++) {
-            adj[i] = new ArrayList<>();
+    }
+
+    // find biconnected components
+    public void findBC(AdjacentList graph) {
+        int n = graph.VertexList.size(); // number of vertexes
+        boolean visited[] = new boolean[n]; // visited vertex
+        disc = new int[n];
+        low = new int[n];
+
+        // loops through all vertexes
+        for (Vertex vertex : graph.VertexList) {
+            if (!visited[vertex.number]) {
+                findBCUtil(vertex.number, -1, visited, graph);
+            }
+        }
+
+        // if there are edges left in the stack
+        if (!edgeStack.isEmpty()) {
+            ArrayList<int[]> lastComponent = new ArrayList<>();
+            while (!edgeStack.isEmpty()) {
+                lastComponent.add(edgeStack.pop());
+            }
+            bc.add(lastComponent);
+        }
+
+        printBiconnectedComponents();
+    }
+
+    // iteractive method to find BCs
+    public void findBCUtil(int start, int parent, boolean[] visited, AdjacentList graph) {
+        Stack<State> stack = new Stack<>(); // stack of states
+        stack.push(new State(start, parent));
+
+        while (!stack.isEmpty()) {
+            State state = stack.peek();
+            int v = state.vertex;
+            int p = state.parent;
+
+            // if vertex is not visited
+            if (!visited[v]) {
+                visited[v] = true;
+                disc[v] = low[v] = ++time;
+                state.iterator = graph.VertexList.get(v).sucessorList.iterator();
+            }
+
+            boolean backtrack = true;
+
+            // loop through all successors
+            while (state.iterator.hasNext()) {
+                int w = state.iterator.next();
+                if (!visited[w]) {
+                    // tree edge found
+                    edgeStack.push(new int[] { v, w });
+                    stack.push(new State(w, v));
+                    backtrack = false;
+                    break;
+                } else if (w != p && disc[w] < disc[v]) {
+                    // return edge found
+                    edgeStack.push(new int[] { v, w });
+                    low[v] = Math.min(low[v], disc[w]);
+                }
+            }
+
+            // once all neighbors are explored
+            if (backtrack) {
+                stack.pop();
+                if (p != -1) { // p is not the root
+                    low[p] = Math.min(low[p], low[v]); // update low number of parent
+
+                    // checks if v is an articulation point
+                    if (low[v] >= disc[p]) {
+                        // new biconnected component
+                        ArrayList<int[]> component = new ArrayList<>();
+                        int[] edge;
+
+                        do {
+                            edge = edgeStack.pop();
+                            component.add(edge);
+                        } while (edge[0] != p || edge[1] != v);
+                        bc.add(component);
+                    }
+                }
+            }
         }
     }
 
-    // Methods
-    // Add edge to graph
-    public void addEdge(int v, int w) {
-        adj[v].add(w);
+    private void printBiconnectedComponents() {
+        System.out.println("Componentes biconexos:");
+        for (ArrayList<int[]> component : bc) {
+            System.out.print("{ ");
+            for (int[] edge : component) {
+                System.out.print("(" + edge[0] + ", " + edge[1] + ") ");
+            }
+            System.out.println("}");
+        }
     }
-
-    
-
-
-    // main test
-    public static void main(String args[]) {
-
-        // Create a graph given in the above diagram
-        Tarjan g1 = new Tarjan(5);
-
-        g1.addEdge(1, 0);
-        g1.addEdge(0, 2);
-        g1.addEdge(2, 1);
-        g1.addEdge(0, 3);
-        g1.addEdge(3, 4);
-        System.out.println("Componentes fortemente conexos do primeiro grafo ");
-        g1.SCC();
-
-        Tarjan g2 = new Tarjan(4);
-        g2.addEdge(0, 1);
-        g2.addEdge(1, 2);
-        g2.addEdge(2, 3);
-        System.out.println("\nComponentes fortemente conexos do segundo grafo ");
-        g2.SCC();
-
-        Tarjan g3 = new Tarjan(7);
-        g3.addEdge(0, 1);
-        g3.addEdge(1, 2);
-        g3.addEdge(2, 0);
-        g3.addEdge(1, 3);
-        g3.addEdge(1, 4);
-        g3.addEdge(1, 6);
-        g3.addEdge(3, 5);
-        g3.addEdge(4, 5);
-        System.out.println("\nComponentes fortemente conexos do terceiro grafo ");
-        g3.SCC();
-
-        Tarjan g4 = new Tarjan(11);
-        g4.addEdge(0, 1);
-        g4.addEdge(0, 3);
-        g4.addEdge(1, 2);
-        g4.addEdge(1, 4);
-        g4.addEdge(2, 0);
-        g4.addEdge(2, 6);
-        g4.addEdge(3, 2);
-        g4.addEdge(4, 5);
-        g4.addEdge(4, 6);
-        g4.addEdge(5, 6);
-        g4.addEdge(5, 7);
-        g4.addEdge(5, 8);
-        g4.addEdge(5, 9);
-        g4.addEdge(6, 4);
-        g4.addEdge(7, 9);
-        g4.addEdge(8, 9);
-        g4.addEdge(9, 8);
-        System.out.println("\nComponentes fortemente conexos do quarto grafo ");
-        g4.SCC();
-
-        Tarjan g5 = new Tarjan(5);
-        g5.addEdge(0, 1);
-        g5.addEdge(1, 2);
-        g5.addEdge(2, 3);
-        g5.addEdge(2, 4);
-        g5.addEdge(3, 0);
-        g5.addEdge(4, 2);
-        System.out.println("\nComponentes fortemente conexos do quinto grafo ");
-        g5.SCC();
-    }
-
 }
