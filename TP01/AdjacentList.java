@@ -85,35 +85,38 @@ public class AdjacentList {
         }
     }
 
-    public int isCycle(int destination) {
+    public HashMap<Integer, Integer> isCycle(int destination) {
+        HashMap<Integer, Integer> cycles = new HashMap<>();
         for (Vertex vert : VertexList) {
             visited = new HashMap<>();
             if (vert.number != destination) {
                 if (!visited.containsKey(vert.number)) {
                     visited.put(vert.number, true);
                     if (isCycle(vert.number, destination) && isCycle(destination, vert.number)) {
-                        visited = new HashMap<>();
-                        return vert.number;
+                        cycles.put(vert.number, destination);
                     }
                 }
             }
         }
-        return -1;
+        return cycles;
     }
 
     private boolean isCycle(int root, int destination) {
         // metodo quase identico ao dfs, mas com a condicao de parada sendo o destino
         Stack<Integer> stack = new Stack<>();
         stack.push(root);
+        // se o destino for sucessor do vertice inicial, nao ha ciclo
+        if (getSucessors(root).contains(destination)) {
+            return false;
+        }
+
         while (!stack.isEmpty()) {
             boolean discovered = false;
             int current = stack.peek();
             ArrayList<Integer> successors = getSucessors(current);
-            int iterations = 0;
             for (Integer vertex : successors) {
-                if (iterations == 0 && vertex == destination) {
-                    return false;
-                } else if (vertex == destination) {
+                // se o vertice atual for o destino, ha ciclo
+                if (vertex == destination) {
                     return true;
                 }
 
@@ -132,7 +135,6 @@ public class AdjacentList {
             if (!discovered) {
                 stack.pop();
             }
-            iterations++;
         }
         return false;
     }

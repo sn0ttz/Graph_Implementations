@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Graph {
@@ -53,14 +54,12 @@ public class Graph {
             // System.out.print(articulation.number + " ");
             // }
             // System.out.println();
-            int cycle = 0;
-            for (Vertex v : adj.VertexList) {
-                if ((cycle = adj.isCycle(v.number)) != -1) {
-                    System.out.println("Ciclo encontrado entre os vértices " + v.number + " e " + cycle);
-                }
+            HashMap<Integer, Integer> cycleMap = new HashMap<>();
+            for (Vertex v1 : adj.VertexList) {
+                cycleMap = adj.isCycle(v1.number);
+                System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
             }
         }
-
         scanner.close();
     }
 
