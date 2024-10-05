@@ -100,6 +100,7 @@ public class Graph {
             // Removing a vertex
             copy.removeVertex(vert);
             // Running a DFS on the graph without the vertex
+            System.out.println("DFS on the graph without vertex " + vert.number);
             int copycomp = copy.Dfs();
             // If the number of components increases, the removed vertex was an articulation
             // point
