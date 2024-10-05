@@ -1,6 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Graph {
@@ -45,23 +45,27 @@ public class Graph {
 
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
 
-            System.out.println(adj.toString());
-            adj.Dfs();
-
-            ArrayList<Vertex> articulationList = connectivityTest(adj);
-            System.out.println("Articulation points: ");
-            for (Vertex articulation : articulationList) {
-                System.out.print(articulation.number + " ");
+            // System.out.println(adj.toString());
+            // adj.Dfs();
+            //
+            // ArrayList<Vertex> articulationList = connectivityTest(adj);
+            // System.out.println("Articulation points: ");
+            // for (Vertex articulation : articulationList) {
+            // System.out.print(articulation.number + " ");
+            // }
+            // System.out.println();
+            HashMap<Integer, Integer> cycleMap = new HashMap<>();
+            for (Vertex v1 : adj.VertexList) {
+                cycleMap = adj.isCycle(v1.number);
+                System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
             }
-            System.out.println();
-
+            
             System.out.println("--------------------------");
             System.out.println("Iniciando método de Tarjan...");
             Tarjan tarjan = new Tarjan();
             tarjan.findBC(adj);
             System.out.println("------------------------");
         }
-
         scanner.close();
     }
 
