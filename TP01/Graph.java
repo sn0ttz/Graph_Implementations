@@ -42,9 +42,8 @@ public class Graph {
 
             System.out.println("Por favor, selecione o número de arestas desejado");
             edgeNumber = scanner.nextInt();
-
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
-
+            System.out.println("Grafo gerado");
             // System.out.println(adj.toString());
             // adj.Dfs();
             //
@@ -54,12 +53,13 @@ public class Graph {
             // System.out.print(articulation.number + " ");
             // }
             // System.out.println();
+
             HashMap<Integer, Integer> cycleMap = new HashMap<>();
             for (Vertex v1 : adj.VertexList) {
                 cycleMap = adj.isCycle(v1.number);
                 System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
             }
-            
+
             System.out.println("--------------------------");
             System.out.println("Iniciando método de Tarjan...");
             Tarjan tarjan = new Tarjan();
