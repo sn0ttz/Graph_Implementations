@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 
 public class Graph {
@@ -45,15 +44,21 @@ public class Graph {
 
             adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
 
-            System.out.println(adj.toString());
-            adj.Dfs();
-
-            ArrayList<Vertex> articulationList = connectivityTest(adj);
-            System.out.println("Articulation points: ");
-            for (Vertex articulation : articulationList) {
-                System.out.print(articulation.number + " ");
+            // System.out.println(adj.toString());
+            // adj.Dfs();
+            //
+            // ArrayList<Vertex> articulationList = connectivityTest(adj);
+            // System.out.println("Articulation points: ");
+            // for (Vertex articulation : articulationList) {
+            // System.out.print(articulation.number + " ");
+            // }
+            // System.out.println();
+            int cycle = 0;
+            for (Vertex v : adj.VertexList) {
+                if ((cycle = adj.isCycle(v.number)) != -1) {
+                    System.out.println("Ciclo encontrado entre os vértices " + v.number + " e " + cycle);
+                }
             }
-            System.out.println();
         }
 
         scanner.close();
