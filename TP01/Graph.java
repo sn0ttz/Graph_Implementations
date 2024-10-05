@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ public class Graph {
         int userOption = 0;
         int vertexNumber = 0;
         int edgeNumber = 0;
-        long startTime, endTime, duration;
+        long startTime, endTime, duration, timeCurent;
 
         System.out.println("Por favor, selecione o tamanho do grafo desejado");
         System.out.println(
@@ -56,11 +57,24 @@ public class Graph {
             if (userOption != 4) {
                 switch (userOption) {
                     case 1:
+                        duration = 0;
                         startTime = System.currentTimeMillis();
                         HashMap<Integer, Integer> cycleMap = new HashMap<>();
                         for (Vertex v1 : adj.VertexList) {
+
                             cycleMap = adj.isCycle(v1.number);
                             System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
+
+                            timeCurent = System.currentTimeMillis() - (duration + startTime);
+                            System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ms");
+
+                            duration = (System.currentTimeMillis() - startTime);
+
+                            if (duration > 300000) {
+                                System.out.println(
+                                        "\n--------------------------------\nTempo de execução excedido\n--------------------------------");
+                                break;
+                            }
                         }
                         endTime = System.currentTimeMillis();
                         duration = (endTime - startTime);
@@ -68,13 +82,17 @@ public class Graph {
                         break;
                     case 2:
                         startTime = System.currentTimeMillis();
+                        duration = 0;
                         adj.Dfs();
-
                         ArrayList<Vertex> articulationList = connectivityTest(adj);
                         System.out.println("\nArticulation points: ");
+
                         for (Vertex articulation : articulationList) {
+
                             System.out.print(articulation.number + " ");
+
                         }
+
                         endTime = System.currentTimeMillis();
                         duration = (endTime - startTime);
                         System.out.println("\n\nTempo de execução: " + duration + "ms");
@@ -112,7 +130,9 @@ public class Graph {
         int components = adj.Dfs();
         // Use a temporary list to store vertices to be removed and re-added
         ArrayList<Vertex> tempVertexList = new ArrayList<>(copy.VertexList);
+        long startTime, duration = 0, timeCurent;
 
+        startTime = System.currentTimeMillis();
         for (Vertex vert : tempVertexList) {
             // Removing a vertex
             copy.removeVertex(vert);
@@ -131,6 +151,15 @@ public class Graph {
                 if (adj.VertexList.get(v.number).sucessorList.contains(vert.number)) {
                     v.sucessorList.add(vert.number);
                 }
+            }
+
+            timeCurent = System.currentTimeMillis() - (duration + startTime);
+            System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ms\n");
+            duration = (System.currentTimeMillis() - startTime);
+            if (duration > 300000) {
+                System.out.println(
+                        "\n--------------------------------\nTempo de execução excedido\n--------------------------------");
+                return articullationList;
             }
         }
         return articullationList;
