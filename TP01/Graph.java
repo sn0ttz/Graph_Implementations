@@ -13,58 +13,75 @@ public class Graph {
         int vertexNumber = 0;
         int edgeNumber = 0;
 
-        while (userOption != 5) {
-            if (userOption != 5) {
-                System.out.println("Por favor, selecione o tamanho do grafo desejado");
-                System.out.println(
-                        " 1 - 100 \n 2 - 1000 \n 3 - 10000 \n 4 - 100000 \n 5 - sair");
+        System.out.println("Por favor, selecione o tamanho do grafo desejado");
+        System.out.println(
+                " 1 - 100 \n 2 - 1000 \n 3 - 10000 \n 4 - 100000 \n 5 - sair");
 
-                userOption = scanner.nextInt();
+        userOption = scanner.nextInt();
+        switch (userOption) {
+            case 1:
+                vertexNumber = 100;
+                break;
+            case 2:
+                vertexNumber = 1000;
+                break;
+            case 3:
+                vertexNumber = 10000;
+                break;
+            case 4:
+                vertexNumber = 100000;
+                break;
+            default:
+                break;
+        }
+
+        System.out.println("Por favor, selecione o número de arestas desejado");
+        edgeNumber = scanner.nextInt();
+        adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
+        System.out.println("Grafo gerado");
+
+        userOption = 0;
+        while (userOption != 4) {
+            System.out.println("Por favor, selecione a opção desejada:");
+            System.out.println("1 - Verificar a existência de ciclos para cada par de vértices");
+            System.out.println("2 - Verificar a existência de articulações removendo cada vértice e realizando um DFS");
+            System.out.println("3 - Método de Tarjan");
+            System.out.println("4 - Sair");
+            userOption = scanner.nextInt();
+            if (userOption != 4) {
                 switch (userOption) {
                     case 1:
-                        vertexNumber = 100;
+                        HashMap<Integer, Integer> cycleMap = new HashMap<>();
+                        for (Vertex v1 : adj.VertexList) {
+                            cycleMap = adj.isCycle(v1.number);
+                            System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
+                        }
                         break;
                     case 2:
-                        vertexNumber = 1000;
+                        adj.Dfs();
+
+                        ArrayList<Vertex> articulationList = connectivityTest(adj);
+                        System.out.println("Articulation points: ");
+                        for (Vertex articulation : articulationList) {
+                            System.out.print(articulation.number + " ");
+                        }
+                        System.out.println();
                         break;
                     case 3:
-                        vertexNumber = 10000;
+                        System.out.println("--------------------------");
+                        System.out.println("Iniciando método de Tarjan...");
+                        Tarjan tarjan = new Tarjan();
+                        tarjan.findBC(adj);
+                        System.out.println("------------------------");
                         break;
                     case 4:
-                        vertexNumber = 100000;
+
                         break;
-                    case 5:
-                        break;
+
                     default:
                         break;
                 }
             }
-
-            System.out.println("Por favor, selecione o número de arestas desejado");
-            edgeNumber = scanner.nextInt();
-            adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
-            System.out.println("Grafo gerado");
-            // System.out.println(adj.toString());
-            // adj.Dfs();
-            //
-            // ArrayList<Vertex> articulationList = connectivityTest(adj);
-            // System.out.println("Articulation points: ");
-            // for (Vertex articulation : articulationList) {
-            // System.out.print(articulation.number + " ");
-            // }
-            // System.out.println();
-
-            HashMap<Integer, Integer> cycleMap = new HashMap<>();
-            for (Vertex v1 : adj.VertexList) {
-                cycleMap = adj.isCycle(v1.number);
-                System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
-            }
-
-            System.out.println("--------------------------");
-            System.out.println("Iniciando método de Tarjan...");
-            Tarjan tarjan = new Tarjan();
-            tarjan.findBC(adj);
-            System.out.println("------------------------");
         }
         scanner.close();
     }
