@@ -23,7 +23,8 @@ public class RandomGraph {
         Edges = Math.min(Edges, maxEdges);
         System.out.println("Generating graph with " + Vertices + " vertices and " + Edges + " edges");
 
-        System.out.println("Density: " + ((double) Edges / (Vertices * (Vertices - 1))));
+        double density = (double) Edges / (Vertices * (Vertices - 1));
+        System.out.printf("Density: %.9f \n", density);
 
         Set<String> existingEdges = new HashSet<>();
         Random rand = new Random();

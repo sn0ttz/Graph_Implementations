@@ -12,6 +12,7 @@ public class Graph {
         int userOption = 0;
         int vertexNumber = 0;
         int edgeNumber = 0;
+        long startTime, endTime, duration;
 
         System.out.println("Por favor, selecione o tamanho do grafo desejado");
         System.out.println(
@@ -37,8 +38,12 @@ public class Graph {
 
         System.out.println("Por favor, selecione o número de arestas desejado");
         edgeNumber = scanner.nextInt();
+        startTime = System.currentTimeMillis();
         adj = RandomGraph.generateRandomGraph(vertexNumber, edgeNumber);
         System.out.println("Grafo gerado");
+        endTime = System.currentTimeMillis();
+        duration = (endTime - startTime);
+        System.out.println("Tempo de execução: " + duration + "ms");
 
         userOption = 0;
         while (userOption != 4) {
@@ -51,28 +56,40 @@ public class Graph {
             if (userOption != 4) {
                 switch (userOption) {
                     case 1:
+                        startTime = System.currentTimeMillis();
                         HashMap<Integer, Integer> cycleMap = new HashMap<>();
                         for (Vertex v1 : adj.VertexList) {
                             cycleMap = adj.isCycle(v1.number);
                             System.out.println("Ciclos com o vértice " + v1.number + ": " + cycleMap);
                         }
+                        endTime = System.currentTimeMillis();
+                        duration = (endTime - startTime);
+                        System.out.println("Tempo de execução: " + duration + "ms");
                         break;
                     case 2:
+                        startTime = System.currentTimeMillis();
                         adj.Dfs();
 
                         ArrayList<Vertex> articulationList = connectivityTest(adj);
-                        System.out.println("Articulation points: ");
+                        System.out.println("\nArticulation points: ");
                         for (Vertex articulation : articulationList) {
                             System.out.print(articulation.number + " ");
                         }
+                        endTime = System.currentTimeMillis();
+                        duration = (endTime - startTime);
+                        System.out.println("\n\nTempo de execução: " + duration + "ms");
                         System.out.println();
                         break;
                     case 3:
                         System.out.println("--------------------------");
                         System.out.println("Iniciando método de Tarjan...");
+                        startTime = System.currentTimeMillis();
                         Tarjan tarjan = new Tarjan();
                         tarjan.findBC(adj);
                         System.out.println("------------------------");
+                        endTime = System.currentTimeMillis();
+                        duration = (endTime - startTime);
+                        System.out.println("Tempo de execução: " + duration + "ms");
                         break;
                     case 4:
 
