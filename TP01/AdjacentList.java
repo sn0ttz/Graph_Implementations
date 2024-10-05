@@ -6,6 +6,8 @@ public class AdjacentList {
     ArrayList<Vertex> VertexList = new ArrayList<>();
     HashMap<Integer, Boolean> visited;
     int components;
+    ArrayList<Edge> Edges = new ArrayList<>();
+    ArrayList<Integer> cycles = new ArrayList<>();
 
     AdjacentList(int size) {
         for (int index = 0; index < size; index++) {
@@ -65,12 +67,14 @@ public class AdjacentList {
             for (Integer vertex : successors) {
                 // para cada sucessor, verifica se ele ja foi visitado
                 if (visited.containsKey(vertex)) {
+                    this.Edges.add(new Edge(current, vertex, "return"));
                     continue;
                     // se nao foi visitado, marca como visitado, coloca na pilha e busca nele
                 } else {
                     visited.put(vertex, true);
                     stack.push(vertex);
                     discovered = true;
+                    this.Edges.add(new Edge(current, vertex, "tree"));
                     break;
                 }
             }
@@ -79,6 +83,60 @@ public class AdjacentList {
                 stack.pop();
             }
         }
+    }
+
+    public HashMap<Integer, Integer> isCycle(int destination) {
+        HashMap<Integer, Integer> cycles = new HashMap<>();
+        for (Vertex vert : VertexList) {
+            visited = new HashMap<>();
+            if (vert.number != destination) {
+                if (!visited.containsKey(vert.number)) {
+                    visited.put(vert.number, true);
+                    if (isCycle(vert.number, destination) && isCycle(destination, vert.number)) {
+                        cycles.put(vert.number, destination);
+                    }
+                }
+            }
+        }
+        return cycles;
+    }
+
+    private boolean isCycle(int root, int destination) {
+        // metodo quase identico ao dfs, mas com a condicao de parada sendo o destino
+        Stack<Integer> stack = new Stack<>();
+        stack.push(root);
+        // se o destino for sucessor do vertice inicial, nao ha ciclo
+        if (getSucessors(root).contains(destination)) {
+            return false;
+        }
+
+        while (!stack.isEmpty()) {
+            boolean discovered = false;
+            int current = stack.peek();
+            ArrayList<Integer> successors = getSucessors(current);
+            for (Integer vertex : successors) {
+                // se o vertice atual for o destino, ha ciclo
+                if (vertex == destination) {
+                    return true;
+                }
+
+                if (visited.containsKey(vertex)) {
+                    this.Edges.add(new Edge(current, vertex, "return"));
+                    continue;
+                } else {
+                    visited.put(vertex, true);
+                    stack.push(vertex);
+                    discovered = true;
+                    this.Edges.add(new Edge(current, vertex, "tree"));
+                    break;
+                }
+            }
+            // aqui jaz
+            if (!discovered) {
+                stack.pop();
+            }
+        }
+        return false;
     }
 
     public ArrayList<Integer> getSucessors(int vertex) {
