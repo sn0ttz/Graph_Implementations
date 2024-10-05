@@ -32,12 +32,24 @@ public class Tarjan {
         boolean visited[] = new boolean[n]; // visited vertex
         disc = new int[n];
         low = new int[n];
+        long startTime, duration = 0, timeCurent;
 
+        startTime = System.nanoTime();
         // loops through all vertexes
         for (Vertex vertex : graph.VertexList) {
             if (!visited[vertex.number]) {
                 findBCUtil(vertex.number, -1, visited, graph);
             }
+
+            timeCurent = System.nanoTime() - (duration + startTime);
+            System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ns\n"); // print time of iteration in nanoseconds
+            duration = (System.nanoTime() - startTime);
+            if (duration > 300000000000L) {
+                System.out.println(
+                        "\n--------------------------------\nTempo de execução excedido\n--------------------------------");
+                return;
+            }
+
         }
 
         // if there are edges left in the stack
