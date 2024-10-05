@@ -90,7 +90,10 @@ public class AdjacentList {
                 if (!visited.containsKey(vert.number)) {
                     visited.put(vert.number, true);
                     if (isCycle(vert.number, destination) && isCycle(destination, vert.number)) {
+                        System.out.println("Cycle found between " + vert.number + " and " + destination);
                         cycles.put(vert.number, destination);
+                    } else {
+                        System.out.println("No cycle found between " + vert.number + " and " + destination);
                     }
                 }
             }
