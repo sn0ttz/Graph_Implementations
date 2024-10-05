@@ -4,10 +4,9 @@ import java.util.Stack;
 
 public class AdjacentList {
     ArrayList<Vertex> VertexList = new ArrayList<>();
-    HashMap<Integer, Boolean> visited;
+    HashMap<Integer, Boolean> visited = new HashMap<>();
+    HashMap<Integer, Integer> cycles = new HashMap<>();
     int components;
-    ArrayList<Edge> Edges = new ArrayList<>();
-    ArrayList<Integer> cycles = new ArrayList<>();
 
     AdjacentList(int size) {
         for (int index = 0; index < size; index++) {
@@ -67,14 +66,12 @@ public class AdjacentList {
             for (Integer vertex : successors) {
                 // para cada sucessor, verifica se ele ja foi visitado
                 if (visited.containsKey(vertex)) {
-                    this.Edges.add(new Edge(current, vertex, "return"));
                     continue;
                     // se nao foi visitado, marca como visitado, coloca na pilha e busca nele
                 } else {
                     visited.put(vertex, true);
                     stack.push(vertex);
                     discovered = true;
-                    this.Edges.add(new Edge(current, vertex, "tree"));
                     break;
                 }
             }
@@ -86,9 +83,9 @@ public class AdjacentList {
     }
 
     public HashMap<Integer, Integer> isCycle(int destination) {
-        HashMap<Integer, Integer> cycles = new HashMap<>();
+        cycles.clear();
         for (Vertex vert : VertexList) {
-            visited = new HashMap<>();
+            visited.clear();
             if (vert.number != destination) {
                 if (!visited.containsKey(vert.number)) {
                     visited.put(vert.number, true);
@@ -121,13 +118,11 @@ public class AdjacentList {
                 }
 
                 if (visited.containsKey(vertex)) {
-                    this.Edges.add(new Edge(current, vertex, "return"));
                     continue;
                 } else {
                     visited.put(vertex, true);
                     stack.push(vertex);
                     discovered = true;
-                    this.Edges.add(new Edge(current, vertex, "tree"));
                     break;
                 }
             }
