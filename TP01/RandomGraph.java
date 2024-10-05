@@ -10,7 +10,10 @@ public class RandomGraph {
     public static AdjacentList generateRandomGraph(int Vertices, Integer Edges) {
         AdjacentList graph = new AdjacentList(Vertices);
 
-        int maxEdges = (Vertices * (Vertices - 1)) / 2;
+        long temp = Vertices - 1;
+        temp = temp * Vertices;
+        temp = temp / 2; 
+        long maxEdges = temp;
 
         // Generates a random number of edges if not specified
         if (Edges == null) {
@@ -20,10 +23,13 @@ public class RandomGraph {
         }
 
         // Verifies that the number of edges is not greater than the maximum possible
-        Edges = Math.min(Edges, maxEdges);
+        Edges = (int) Math.min(Edges, maxEdges);
         System.out.println("Generating graph with " + Vertices + " vertices and " + Edges + " edges");
 
-        System.out.println("Density: " + ((double) Edges / (Vertices * (Vertices - 1))));
+        temp = Vertices - 1;
+        temp = Vertices * temp;
+        double density = (double) Edges / (temp);
+        System.out.printf("Density: %.9f \n", density);
 
         Set<String> existingEdges = new HashSet<>();
         Random rand = new Random();
