@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -123,28 +122,31 @@ public class Graph {
 
     public static ArrayList<Vertex> connectivityTest(AdjacentList adj) {
         ArrayList<Vertex> articullationList = new ArrayList<>();
-        // Creating a deep copy of the original graph
+        // cria uma cópia profunda do grafo original
 
         AdjacentList copy = adj.clone();
-        // Running a DFS on the original graph to check the number of components
+
+        // realiza uma DFS no grafo original para verificar o número de componentes
         int components = adj.Dfs();
-        // Use a temporary list to store vertices to be removed and re-added
+
+        // utiliza uma lista temporária para armazenar os vértices a serem removidos e
+        // re-adicionados
         ArrayList<Vertex> tempVertexList = new ArrayList<>(copy.VertexList);
         long startTime, duration = 0, timeCurent;
 
         startTime = System.currentTimeMillis();
         for (Vertex vert : tempVertexList) {
-            // Removing a vertex
+            // removendo o vértice
             copy.removeVertex(vert);
-            // Running a DFS on the graph without the vertex
+            // realizando uma DFS no grafo sem o vértice
             System.out.println("DFS on the graph without vertex " + vert.number);
             int copycomp = copy.Dfs();
-            // If the number of components increases, the removed vertex was an articulation
-            // point
+            // se o número de componentes aumentar, o vértice removido era um ponto de
+            // articulação
             if (copycomp > components) {
                 articullationList.add(vert);
             }
-            // Re-adding the vertex
+            // re-adicionando o vértice
             copy.VertexList.add(vert);
 
             for (Vertex v : copy.VertexList) {
