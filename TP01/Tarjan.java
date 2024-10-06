@@ -14,35 +14,38 @@ class State {
 }
 
 public class Tarjan {
-    // Atributes
+    // Atributos
     private int time;
-    private ArrayList<ArrayList<int[]>> bc = new ArrayList<>(); // biconnected components
-    private Stack<int[]> edgeStack = new Stack<>(); // stack of edges
-    int disc[]; // discovery time of vertex
-    int low[]; // low number of vertex
+    private ArrayList<ArrayList<int[]>> bc = new ArrayList<>(); // componentes biconexos
+    private Stack<int[]> edgeStack = new Stack<>(); // pilha de arestas
+    int disc[]; // tempo de descoberta de vertice
+    int low[]; // numero "low" de vertice
 
-    // Constructor
+    // Construtor
     public Tarjan() {
         this.time = 0;
     }
 
-    // find biconnected components
+    // encontrar componentes biconexos
     public void findBC(AdjacentList graph) {
-        int n = graph.VertexList.size(); // number of vertexes
-        boolean visited[] = new boolean[n]; // visited vertex
+        int n = graph.VertexList.size(); // numero de vertices
+        boolean visited[] = new boolean[n]; // vertices visitados
         disc = new int[n];
         low = new int[n];
         long startTime, duration = 0, timeCurent;
 
         startTime = System.nanoTime();
-        // loops through all vertexes
+
+        // itera para cada um dos vertices
         for (Vertex vertex : graph.VertexList) {
             if (!visited[vertex.number]) {
                 findBCUtil(vertex.number, -1, visited, graph);
             }
 
             timeCurent = System.nanoTime() - (duration + startTime);
-            System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ns\n"); // print time of iteration in nanoseconds
+
+            System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ns\n"); // printa tempo de iteração
+
             duration = (System.nanoTime() - startTime);
             if (duration > 300000000000L) {
                 System.out.println(
@@ -52,7 +55,7 @@ public class Tarjan {
 
         }
 
-        // if there are edges left in the stack
+        // se ainda houver arestas na pilha
         if (!edgeStack.isEmpty()) {
             ArrayList<int[]> lastComponent = new ArrayList<>();
             while (!edgeStack.isEmpty()) {
@@ -64,9 +67,9 @@ public class Tarjan {
         printBiconnectedComponents();
     }
 
-    // iteractive method to find BCs
+    // metodo iterativo para encontrar componentes biconexos
     public void findBCUtil(int start, int parent, boolean[] visited, AdjacentList graph) {
-        Stack<State> stack = new Stack<>(); // stack of states
+        Stack<State> stack = new Stack<>(); // pilha de estados
         stack.push(new State(start, parent));
 
         while (!stack.isEmpty()) {
@@ -74,7 +77,7 @@ public class Tarjan {
             int v = state.vertex;
             int p = state.parent;
 
-            // if vertex is not visited
+            // se o vertice ainda não foi visitado
             if (!visited[v]) {
                 visited[v] = true;
                 disc[v] = low[v] = ++time;
@@ -83,31 +86,31 @@ public class Tarjan {
 
             boolean backtrack = true;
 
-            // loop through all successors
+            // itera sobre os sucessores do vertice
             while (state.iterator.hasNext()) {
                 int w = state.iterator.next();
                 if (!visited[w]) {
-                    // tree edge found
+                    // aresta de arvore
                     edgeStack.push(new int[] { v, w });
                     stack.push(new State(w, v));
                     backtrack = false;
                     break;
                 } else if (w != p && disc[w] < disc[v]) {
-                    // return edge found
+                    // aresta de retorno
                     edgeStack.push(new int[] { v, w });
                     low[v] = Math.min(low[v], disc[w]);
                 }
             }
 
-            // once all neighbors are explored
+            // quando todos os vizinhos foram visitados
             if (backtrack) {
                 stack.pop();
-                if (p != -1) { // p is not the root
-                    low[p] = Math.min(low[p], low[v]); // update low number of parent
+                if (p != -1) { // p não é raiz
+                    low[p] = Math.min(low[p], low[v]); // atualiza low do pai
 
-                    // checks if v is an articulation point
+                    // checa se v é um ponto de articulação
                     if (low[v] >= disc[p]) {
-                        // new biconnected component
+                        // novo componente biconexo
                         ArrayList<int[]> component = new ArrayList<>();
                         int[] edge;
 

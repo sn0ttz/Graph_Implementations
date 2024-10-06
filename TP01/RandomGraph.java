@@ -15,20 +15,23 @@ public class RandomGraph {
         temp = temp / 2; 
         long maxEdges = temp;
 
-        // Generates a random number of edges if not specified
+        // gera um número aleatório de arestas caso não seja fornecido
         if (Edges == null) {
             Random rand = new Random();
             int minEdge = Vertices - 1;
             Edges = rand.nextInt(minEdge * 10 - minEdge) + minEdge;
         }
 
-        // Verifies that the number of edges is not greater than the maximum possible
+
+        // verifica se o número de arestas não é maior que o máximo possível
         Edges = (int) Math.min(Edges, maxEdges);
         System.out.println("Generating graph with " + Vertices + " vertices and " + Edges + " edges");
 
         temp = Vertices - 1;
         temp = Vertices * temp;
         double density = (double) Edges / (temp);
+        
+       
         System.out.printf("Density: %.9f \n", density);
 
         Set<String> existingEdges = new HashSet<>();
@@ -41,7 +44,7 @@ public class RandomGraph {
 
         Collections.shuffle(vertices, rand);
 
-        // Adds edges to make the graph connected
+        // adiciona arestas para tornar o grafo conexo
         for (int v = 1; v < vertices.size(); v++) {
             addEdge(graph, existingEdges, vertices.get(v), vertices.get(rand.nextInt(v)));
         }
@@ -68,7 +71,7 @@ public class RandomGraph {
         int bigger = Math.max(vertex1, vertex2);
         String edgeKey = smaller + " " + bigger;
 
-        // Adds the edge if it doesn't already exist
+        // adiciona a aresta se ela ainda não existir
         if (existingEdges.add(edgeKey)) {
             graph.add(smaller, bigger);
             graph.add(bigger, smaller);

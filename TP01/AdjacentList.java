@@ -30,10 +30,10 @@ public class AdjacentList {
     }
 
     public void removeVertex(Vertex vertex) {
-        // Remove the vertex from the VertexList
+        // remove o vertice da lista de vertices
         VertexList.remove(vertex);
 
-        // Remove all references to this vertex in the successor lists of other vertices
+        // remove todas as referencias ao vertice removido
         for (Vertex v : VertexList) {
             v.sucessorList.remove(Integer.valueOf(vertex.number));
         }
@@ -83,14 +83,24 @@ public class AdjacentList {
     }
 
     public HashMap<Integer, Integer> isCycle(int destination) {
+        // limpa o hashmap de ciclos
         cycles.clear();
         for (Vertex vert : VertexList) {
+            // a cada iteração, limpa o hashmap de visitados
             visited.clear();
+            // caso o vertice atual nao seja o destino, verifica se ha ciclo entre ele e o
+            // destino
             if (vert.number != destination) {
+                // se o vertice atual nao foi visitado, verifica se ha ciclo entre ele e o
+                // destino
                 if (!visited.containsKey(vert.number)) {
+                    // marca o vertice atual como visitado
                     visited.put(vert.number, true);
+                    // chama o metodo de verificacao de ciclo com o vertice atual e o destino, e
+                    // depois com o destino e o vertice atual
                     if (isCycle(vert.number, destination) && isCycle(destination, vert.number)) {
                         System.out.println("Cycle found between " + vert.number + " and " + destination);
+                        // caso haja ciclo, adiciona o vertice atual e o destino ao hashmap de ciclos
                         cycles.put(vert.number, destination);
                     } else {
                         System.out.println("No cycle found between " + vert.number + " and " + destination);
@@ -138,6 +148,8 @@ public class AdjacentList {
     }
 
     public ArrayList<Integer> getSucessors(int vertex) {
+        // metodo iterativo para evitar nullpointerexception após a remoção de um
+        // vertice
         ArrayList<Integer> sucessors = new ArrayList<>();
         for (Vertex vert : VertexList) {
             if (vert.number == vertex) {
@@ -175,7 +187,7 @@ class Vertex {
         this.sucessorList = new ArrayList<>(vertex.sucessorList);
     }
 
-    // Clone method
+    // clone
     public Vertex clone() {
         return new Vertex(this);
     }
