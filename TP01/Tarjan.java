@@ -35,6 +35,7 @@ public class Tarjan {
         long startTime, duration = 0, timeCurent;
 
         startTime = System.nanoTime();
+
         // itera para cada um dos vertices
         for (Vertex vertex : graph.VertexList) {
             if (!visited[vertex.number]) {
@@ -42,8 +43,8 @@ public class Tarjan {
             }
 
             timeCurent = System.nanoTime() - (duration + startTime);
+
             System.out.println("Tempo de execução dessa iteração: " + timeCurent + "ns\n"); // printa tempo de iteração
-                                                                                            // em nano segundos
 
             duration = (System.nanoTime() - startTime);
             if (duration > 300000000000L) {

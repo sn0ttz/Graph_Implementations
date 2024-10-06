@@ -10,7 +10,10 @@ public class RandomGraph {
     public static AdjacentList generateRandomGraph(int Vertices, Integer Edges) {
         AdjacentList graph = new AdjacentList(Vertices);
 
-        int maxEdges = (Vertices * (Vertices - 1)) / 2;
+        long temp = Vertices - 1;
+        temp = temp * Vertices;
+        temp = temp / 2; 
+        long maxEdges = temp;
 
         // gera um número aleatório de arestas caso não seja fornecido
         if (Edges == null) {
@@ -19,11 +22,16 @@ public class RandomGraph {
             Edges = rand.nextInt(minEdge * 10 - minEdge) + minEdge;
         }
 
+
         // verifica se o número de arestas não é maior que o máximo possível
-        Edges = Math.min(Edges, maxEdges);
+        Edges = (int) Math.min(Edges, maxEdges);
         System.out.println("Generating graph with " + Vertices + " vertices and " + Edges + " edges");
 
-        double density = (double) Edges / (Vertices * (Vertices - 1));
+        temp = Vertices - 1;
+        temp = Vertices * temp;
+        double density = (double) Edges / (temp);
+        
+       
         System.out.printf("Density: %.9f \n", density);
 
         Set<String> existingEdges = new HashSet<>();
