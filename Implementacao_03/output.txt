@@ -1,0 +1,27 @@
+Random Tree time:
+Nodes: 10
+Max Flow: 95
+Time: 3ms
+Nodes: 100
+Max Flow: 17
+Time: 0ms
+Nodes: 1000
+Max Flow: 76
+Time: 4ms
+Nodes: 10000
+Max Flow: 81
+Time: 12ms
+------------------------------------------------------
+Random Graph time:
+Nodes: 10
+Max Flow: 65
+Time: 0ms
+Nodes: 100
+Max Flow: 57
+Time: 0ms
+Nodes: 1000
+Max Flow: 16
+Time: 1ms
+Nodes: 10000
+Max Flow: 33
+Time: 13ms
