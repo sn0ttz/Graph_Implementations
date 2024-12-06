@@ -1,96 +1,85 @@
 package TP02;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
-//this implementation was heavily inspired by the one on the following link: https://www.programiz.com/dsa/graph-adjacency-list
 public class Graph {
-    LinkedList<Edge> adjListArray[];
-    int numVertices;
+    private Map<Integer, List<Edge>> adjacencyList;
 
-    @SuppressWarnings("unchecked")
-    Graph(int numVertices) {
-        this.numVertices = numVertices;
-        adjListArray = new LinkedList[numVertices];
-        for (int i = 0; i < numVertices; i++) {
-            adjListArray[i] = new LinkedList<>();
+    public Graph() {
+        adjacencyList = new HashMap<>();
+    }
+
+    public void addEdge(int source, int destiny, double weight) {
+        adjacencyList.putIfAbsent(source, new ArrayList<>());
+        adjacencyList.get(source).add(new Edge(destiny, weight));
+
+        adjacencyList.putIfAbsent(destiny, new ArrayList<>());
+        adjacencyList.get(destiny).add(new Edge(source, weight));
+    }
+
+    public Map<Integer, List<Edge>> getAdjacencyList() {
+        return adjacencyList;
+    }
+
+    public void printGraph() {
+        for (Map.Entry<Integer, List<Edge>> entry : adjacencyList.entrySet()) {
+            System.out.println("Vértice " + entry.getKey() + ": " + entry.getValue());
         }
     }
 
-    public void addEdge(int source, int destiny, int capacity) {
-        Edge directEdge = new Edge(destiny, capacity);
-        Edge reverseEdge = new Edge(source, 0);
+    public Map<Integer, Double> dijkstra(int startVertex) {
+        Map<Integer, Double> distances = new HashMap<>();
+        PriorityQueue<VertexDistance> pq = new PriorityQueue<>(Comparator.comparingDouble(vd -> vd.distance));
+        pq.add(new VertexDistance(startVertex, 0.0));
+        distances.put(startVertex, 0.0);
 
-        directEdge.reverse = reverseEdge;
-        reverseEdge.reverse = directEdge;
+        while (!pq.isEmpty()) {
+            VertexDistance current = pq.poll();
+            int currentVertex = current.vertex;
 
-        adjListArray[source].add(directEdge);
-        adjListArray[destiny].add(reverseEdge);
-    }
-
-    public boolean BFS(int source, int destiny, int[] parent, Edge[] parentEdges) {
-        boolean[] visited = new boolean[adjListArray.length];
-        Arrays.fill(visited, false);
-
-        Queue<Integer> queue = new LinkedList<>();
-        queue.add(source);
-        visited[source] = true;
-        parent[source] = -1;
-
-        while (!queue.isEmpty()) {
-            int u = queue.poll();
-
-            for (Edge edge : adjListArray[u]) {
-                int v = edge.destiny;
-
-                if (!visited[v] && edge.residualCap() > 0) {
-                    if (v == destiny) {
-                        parent[v] = u;
-                        parentEdges[v] = edge;
-                        return true;
-                    }
-                    queue.add(v);
-                    parent[v] = u;
-                    parentEdges[v] = edge;
-                    visited[v] = true;
+            for (Edge edge : adjacencyList.getOrDefault(currentVertex, Collections.emptyList())) {
+                double newDist = distances.get(currentVertex) + edge.weight;
+                if (newDist < distances.getOrDefault(edge.destiny, Double.MAX_VALUE)) {
+                    distances.put(edge.destiny, newDist);
+                    pq.add(new VertexDistance(edge.destiny, newDist));
                 }
             }
         }
 
-        return false;
+        return distances;
     }
+
+    public void printShortestPaths(int startVertex) {
+        Map<Integer, Double> distances = dijkstra(startVertex);
+        for (Map.Entry<Integer, Double> entry : distances.entrySet()) {
+            System.out.println(
+                    "Distância do vértice " + startVertex + " ao vértice " + entry.getKey() + " é " + entry.getValue());
+        }
+    }
+
 }
 
 class Edge {
-    int source;
     int destiny;
-    int flux;
-    int maxFlux;
-    Edge reverse;
+    double weight;
 
-    Edge(int s, int d, int max) {
-        this.source = s;
-        this.destiny = d;
-        this.flux = 0;
-        this.maxFlux = max;
+    public Edge(int destiny, double weight) {
+        this.destiny = destiny;
+        this.weight = weight;
     }
 
-    // inicializing the flux as zero here, so i dont have to do it on the
-    // FordFulkerson algorithm
-    Edge(int d, int max) {
-        this.destiny = d;
-        this.flux = 0;
-        this.maxFlux = max;
-        this.reverse = null;
+    @Override
+    public String toString() {
+        return "(" + destiny + ", " + weight + ")";
     }
+}
 
-    public void addFlux(int flux) {
-        this.flux += flux;
-        this.reverse.flux -= flux;
-    }
+class VertexDistance {
+    int vertex;
+    double distance;
 
-    public int residualCap() {
-        return maxFlux - flux;
+    public VertexDistance(int vertex, double distance) {
+        this.vertex = vertex;
+        this.distance = distance;
     }
 }
