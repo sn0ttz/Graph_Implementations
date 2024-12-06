@@ -115,7 +115,7 @@ class Graph {
         return johnson();
     }
 
-    public Set<Integer> calculateKcenters(int k) {
+    public Result calculateKcenters(int k) {
         Set<Integer> centers = new HashSet<>();
         centers.add(getHighestDegreeVertex()); // Escolhe um vértice arbitrário para ser o primeiro centro. Neste caso,
                                                // o vértice de maior grau pois este tem mais chance de ser um centro do
@@ -129,6 +129,8 @@ class Graph {
         for (int v : adjacencyList.keySet()) {
             minDistances.put(v, Double.MAX_VALUE);
         }
+
+        double R = -1; // Inicializa o raio
 
         while (centers.size() < k) {
             int newCenter = -1;
@@ -153,9 +155,13 @@ class Graph {
             }
             System.out.println("Restam " + (k - centers.size() - 1) + " centros a serem adicionados");
             centers.add(newCenter);
+
+            // Atualiza o raio
+            if (maxMinDist > R) {
+                R = maxMinDist;
+            }
         }
-        System.out.println("Centers: " + centers);
-        return centers;
+        return new Result(centers, R);
     }
 
     public int getHighestDegreeVertex() {
@@ -168,6 +174,18 @@ class Graph {
             }
         }
         return highestDegreeVertex;
+    }
+}
+
+// classe criada apenas para retorno facilitado do resultado em
+// calculateKcenters
+class Result {
+    Set<Integer> centers;
+    double radius;
+
+    public Result(Set<Integer> centers, double radius) {
+        this.centers = centers;
+        this.radius = radius;
     }
 }
 

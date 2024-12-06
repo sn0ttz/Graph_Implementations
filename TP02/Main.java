@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Set;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -25,18 +24,20 @@ public class Main {
                 graph.addEdge(values[0], values[1], values[2]);
             }
             long startTime = System.currentTimeMillis();
-            Set<Integer> Kcenters = graph.calculateKcenters(k);
+            Result result = graph.calculateKcenters(k);
             long endTime = System.currentTimeMillis();
-            System.out.println(Kcenters);
+
             writer.write("pmed" + i + ".txt:\n");
             writer.write("Tempo: " + (endTime - startTime) + "ms\n");
             writer.write("K = " + k + "\n");
             writer.write("Centros: \n");
-            for (int center : Kcenters) {
+            for (int center : result.centers) {
                 writer.write(center + " ");
             }
             writer.write("\n");
+            writer.write("Raio: " + result.radius + "\n");
             writer.write("-------------------------------------------------------\n");
+
             System.out.println("Fim iteração " + i);
         }
         writer.close();
