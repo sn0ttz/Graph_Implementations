@@ -1,0 +1,9 @@
+Aproximacao_K_Centros(Grafo G, Inteiro k):
+    Inicialize C = {v0}  # Escolha um vértice arbitrário v0
+    Enquanto |C| < k:
+        Para cada vértice v ∈ V:
+            Calcule d_min(v, C) = min(d(v, c)) para todos c ∈ C
+        Escolha c_novo = argmax(d_min(v, C)) para todos v ∈ V
+        Adicione c_novo ao conjunto C
+    Calcule R = max(d_min(v, C)) para todos v ∈ V
+    Retorne (C, R)
