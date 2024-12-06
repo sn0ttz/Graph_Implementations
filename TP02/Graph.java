@@ -153,7 +153,6 @@ class Graph {
                     newCenter = v;
                 }
             }
-            System.out.println("Restam " + (k - centers.size() - 1) + " centros a serem adicionados");
             centers.add(newCenter);
 
             // Atualiza o raio
