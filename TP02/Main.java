@@ -13,7 +13,7 @@ public class Main {
 
         BufferedReader reader = new BufferedReader(new FileReader("TP02/TestGraphs/pmed1.txt"));
         BufferedWriter writer = new BufferedWriter(new FileWriter("TP02/ResultsII.txt"));
-        for (int i = 1; i <= 40; i++) {
+        for (int i = 3; i <= 40; i++) {
             System.out.println("Calculando K-centros para o arquivo pmed" + i + ":");
             reader = new BufferedReader(new FileReader("TP02/TestGraphs/pmed" + i + ".txt"));
             String line = reader.readLine();
@@ -38,6 +38,26 @@ public class Main {
             writer.write("\n");
             writer.write("Raio: " + result.radius + "\n");
             writer.write("-------------------------------------------------------\n");
+
+
+            // Teste do método de força bruta
+            System.out.println("Calculando K-centros (força bruta) para o arquivo pmed" + i + ":");
+            startTime = System.currentTimeMillis();
+            Result bruteForceResult = graph.calculateKcentersBruteForce(k);
+            endTime = System.currentTimeMillis();
+
+            writer.write("Força Bruta:\n");
+            writer.write("Tempo: " + (endTime - startTime) + "ms\n");
+            writer.write("Centros: \n");
+            for (int center : bruteForceResult.centers) {
+                writer.write(center + " ");
+            }
+            writer.write("\n");
+            writer.write("Raio: " + bruteForceResult.radius + "\n");
+            writer.write("-------------------------------------------------------\n");
+
+
+
 
         }
         writer.close();
